@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>NLP Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .chatbox {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .input-area {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .bot {
+            color: #27ae60;
+        }
+
+        .user {
+            color: #2980b9;
+        }
+
+        .chatbox p {
+            margin: 6px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h2>💬 Chatbot Kesehatan Mata</h2>
+    <div class="chatbox" id="chatbox"></div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ketik pesan...">
+        <button onclick="sendMessage()">Kirim</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<p class="user"><b>User:</b> ${message}</p>`;
+
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await res.json();
+            chatbox.innerHTML += `<p class="bot"><b>Bot:</b> ${data.reply}</p>`;
+
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
